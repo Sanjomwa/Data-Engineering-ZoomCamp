@@ -5,6 +5,6 @@ WORKDIR /code
 
 COPY pyproject.toml .python-version uv.lock ./
 
-#COPY pipeline.py .
+# COPY pipeline.py .
 
-#ENTRYPOINT ["python", "pipeline.py"]
+# ENTRYPOINT ["python", "pipeline.py"]
