@@ -8,6 +8,6 @@ COPY pyproject.toml .python-version uv.lock ./
 
 RUN uv sync --locked
 
-COPY ./pipeline/pipeline.py .
+COPY pipeline.py .
 
 ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
