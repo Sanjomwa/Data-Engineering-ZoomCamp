@@ -1,7 +1,13 @@
-FROM postgres:18
+FROM python:3.13-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin
 
-ENV POSTGRES_USER=root
-ENV POSTGRES_PASSWORD=root
-ENV POSTGRES_DB=ny_taxi
+WORKDIR /code
 
-EXPOSE 5432
+
+COPY pyproject.toml .python-version uv.lock ./
+
+RUN uv sync --locked
+
+COPY ./pipeline/pipeline.py .
+
+ENTRYPOINT ["uv", "run", "python", "pipeline.py"]
