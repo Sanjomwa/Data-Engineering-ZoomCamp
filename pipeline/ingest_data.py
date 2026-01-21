@@ -33,8 +33,8 @@ parse_dates = [
 
 def run():
     # Postgres connection details
-    pg_user = 'postgres'
-    pg_pass = 'postgres'
+    pg_user = 'root'
+    pg_pass = 'root'
     pg_host = 'localhost'   # use 'postgres' if running inside Docker Compose
     pg_port = 5432
     pg_db = 'ny_taxi'
