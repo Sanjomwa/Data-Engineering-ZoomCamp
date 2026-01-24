@@ -2,6 +2,18 @@
 Docker-Workshop-Codespaces
 # HOMEWORK
 
+# QUESTION 1
+Run docker with the python:3.13 image. Use an entrypoint bash to interact with the container.
+What's the version of pip in the image?
+# Answer -  25.3 
+# Bash
+docker run -it --entrypoint bash python:3.13
+pip --version
+
+# QUESTION 2
+# Answer - Hostname: db, Port:5432
+
+
 QUESTION 3
 For the trips in November 2025 (lpep_pickup_datetime between '2025-11-01' and '2025-12-01', exclusive of the upper bound), how many trips had a trip_distance of less than or equal to 1 mile? -
 # Answer - 8007
