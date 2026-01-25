@@ -70,3 +70,6 @@ GROUP BY dz.zone
 ORDER BY largest_tip DESC
 LIMIT 1;
 
+# QUESTION 7
+# Answer: terraform init, terraform apply -auto-approve, terraform destroy
+
