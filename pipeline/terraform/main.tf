@@ -15,17 +15,32 @@ provider "google" {
 
 
 resource "google_storage_bucket" "demo-bucket" {
-  name          = "encoded-joy-485413-k5"
-  location      = "Africa-South1"
-  force_destroy = true
+  name     = "encoded-joy-485413-k5"
+  location = "Africa-South1"
 
+  # Optional, but recommended settings:
+  storage_class               = "STANDARD"
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
 
   lifecycle_rule {
-    condition {
-      age = 1
-    }
     action {
-      type = "AbortIncompleteMultipartUpload"
+      type = "Delete"
+    }
+    condition {
+      age = 30 // days
     }
   }
+
+  force_destroy = true
+}
+
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = "<The Dataset Name You Want to Use>"
+  project    = "encoded-joy-485413-k5"
+  location   = "AFRICA-SOUTH1"
 }
