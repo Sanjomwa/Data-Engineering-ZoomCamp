@@ -18,7 +18,6 @@ services:
     volumes:
       - ny_taxi_postgres_data:/var/lib/postgresql
       - ./data:/temp_app/data
-    # 🚫 removed wrong dependency on kestra
 
   pgadmin:
     image: dpage/pgadmin4
@@ -55,6 +54,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
       - ./data:/temp_app/data/
+      - ./scripts:/tmp_app/scripts/
     environment:
       KESTRA_CONFIGURATION: |
         datasources:
@@ -86,3 +86,15 @@ services:
     depends_on:
       kestra_postgres:
         condition: service_started
+
+  ingestion:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ./scripts:/app
+      - ./data:/temp_app/data
+    command: >
+      sh -c "pip install pandas sqlalchemy psycopg2-binary &&
+             python ingestion_pipeline.py"
+    depends_on:
+      - postgres-ny-taxi
