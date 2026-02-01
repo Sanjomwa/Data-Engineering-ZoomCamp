@@ -17,7 +17,8 @@ services:
       - "5432:5432"
     volumes:
       - ny_taxi_postgres_data:/var/lib/postgresql # Named volume for persistent DB storage
-      - ./data:/var/lib/postgresql/data/import # Bind mount to import local data files
+      - ./data:/temp_app/data # <-- mount local ./data into /temp_app/data in the container
+      - ./init-scripts:/docker-entrypoint-initdb.d # <-- mount local ./init-scripts into the container to initialize the DB
     depends_on:
       kestra:
         condition: service_started
