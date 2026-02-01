@@ -16,17 +16,15 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ny_taxi_postgres_data:/var/lib/postgresql # Named volume for persistent DB storage
-      - ./data:/temp_app/data # Mount local ./data into /temp_app/data
-    depends_on:
-      kestra:
-        condition: service_started
+      - ny_taxi_postgres_data:/var/lib/postgresql
+      - ./data:/temp_app/data
+    # 🚫 removed wrong dependency on kestra
 
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=root
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "8085:80"
     depends_on:
