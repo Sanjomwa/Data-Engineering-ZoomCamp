@@ -94,7 +94,7 @@ services:
   ingestion:
     build:
       context: ./scripts # folder containing ingestion_pipeline.py
-      dockerfile: Dockerfile.ingestion # custom Dockerfile for ingestion
+      dockerfile: ingestion_pipeline # custom Dockerfile for ingestion
     volumes:
       - ./data:/temp_app/data # mount local data into container
     depends_on:
