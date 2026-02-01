@@ -57,7 +57,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
       - ./data:/temp_app/data/
-      - ./scripts:/tmp_app/scripts/
     environment:
       KESTRA_CONFIGURATION: |
         datasources:
