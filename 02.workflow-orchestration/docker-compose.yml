@@ -18,7 +18,6 @@ services:
     volumes:
       - ny_taxi_postgres_data:/var/lib/postgresql # Named volume for persistent DB storage
       - ./data:/temp_app/data # Mount local ./data into /temp_app/data
-      - ./init-scripts:/docker-entrypoint-initdb.d # Initialize DB scripts
     depends_on:
       kestra:
         condition: service_started
