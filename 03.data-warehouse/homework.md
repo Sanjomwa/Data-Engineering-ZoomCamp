@@ -111,12 +111,14 @@ Partitioning and clustering significantly reduce scanned data.
 Question:**
 Where are the Parquet files stored?
 How it was solved:Checked the URIs in the external table definition.
+
 **Answer:**
 Data is stored in a Google Cloud Storage bucket (gs://yellow_taxi_trip_records_parquet/).
 
 **8. True/False – Materialized Tables Are Always Cheaper
 Question:**
 True or false: Materialized tables are always cheaper than external tables.How it was solved:Evaluated storage costs, query patterns, and optimization factors.
+
 **Answer:**
 False.
 Materialized tables are often faster and cheaper, but not always. Query cost depends on partitioning, clustering, and query type.
@@ -129,6 +131,7 @@ SELECT COUNT(*) FROM `zoomcamp.yellow_trip_data_regular`;
 ```
 **Answer:**
 Estimated bytes processed = near zero.BigQuery answers COUNT(*) using row metadata, not by scanning all columns.
+
 
 **Lessons Learned**
 - External tables are useful for quick access but less efficient for queries.
