@@ -54,5 +54,5 @@ WHERE DATE(tpep_dropoff_datetime) >= '2024-03-01' AND DATE(tpep_dropoff_datetime
 --Q8
 -- False
 
--- Q10
+-- Q9
 SELECT COUNT(*) FROM `zoomcamp.yellow_trip_data_regular`
