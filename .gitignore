@@ -1,0 +1,13 @@
+# Ignore raw data and large files
+data/
+*.csv.gz
+*.parquet
+*.duckdb
+
+# Ignore dbt build artifacts
+/target/
+/dbt_packages/
+
+# Python caches
+__pycache__/
+*.pyc
