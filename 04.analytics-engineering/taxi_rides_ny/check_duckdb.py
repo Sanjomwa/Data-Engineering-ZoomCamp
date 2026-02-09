@@ -1,20 +1,14 @@
 import duckdb
 
-# Connect to the parent-folder DuckDB file (the big one with data)
 con = duckdb.connect('/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/taxi_rides_ny.duckdb')
+con.execute("CREATE SCHEMA IF NOT EXISTS prod")
 
-tables = con.execute("""
-    SELECT table_schema, table_name
-    FROM information_schema.tables
-    WHERE table_type='BASE TABLE'
-""").fetchall()
+for taxi_type in ["yellow", "green"]:
+    con.execute(f"""
+        CREATE OR REPLACE TABLE prod.{taxi_type}_tripdata AS
+        SELECT * FROM read_parquet('data/{taxi_type}/*.parquet', union_by_name=true)
+    """)
+    count = con.execute(f"SELECT COUNT(*) FROM prod.{taxi_type}_tripdata").fetchone()[0]
+    print(f"✅ Created prod.{taxi_type}_tripdata with {count} rows")
 
-print("Tables found:", tables)
-
-for schema, table in tables:
-    full_name = f"{schema}.{table}"
-    print(f"\n=== {full_name} ===")
-    count = con.execute(f"SELECT COUNT(*) FROM {full_name}").fetchone()[0]
-    print(f"Row count: {count}")
-    sample = con.execute(f"SELECT * FROM {full_name} LIMIT 5").fetchall()
-    print("Sample rows:", sample)
+con.close()
