@@ -37,7 +37,10 @@ def download_and_convert_files(taxi_type):
             con.close()
 
             # Remove the CSV.gz file to save space
-            csv_gz_filepath.unlink()
+            if csv_gz_filepath.exists():
+                csv_gz_filepath.unlink()
+            else:
+                print(f"Warning: {csv_gz_filepath} not found, skipping unlink")
             print(f"Completed {parquet_filename}")
 
 def update_gitignore():
