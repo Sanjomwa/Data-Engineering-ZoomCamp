@@ -1,17 +1,22 @@
 import duckdb
 
-con = duckdb.connect('/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/taxi_rides_ny/taxi_rides_ny.duckdb')
+# Connect to the parent-folder DuckDB file (the 2.4 GB one)
+con = duckdb.connect('/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/taxi_rides_ny.duckdb')
 
-# List all schemas
-print("Schemas:", con.execute("SELECT schema_name FROM information_schema.schemata").fetchall())
+# List all tables across schemas
+tables = con.execute("""
+    SELECT table_schema, table_name
+    FROM information_schema.tables
+    WHERE table_type='BASE TABLE'
+""").fetchall()
 
-# List tables in prod schema
-print("Tables in prod:", con.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='prod'").fetchall())
+print("Tables found:", tables)
 
-# Row counts
-print("Yellow rows:", con.execute("SELECT COUNT(*) FROM prod.yellow_tripdata").fetchall())
-print("Green rows:", con.execute("SELECT COUNT(*) FROM prod.green_tripdata").fetchall())
-
-# Preview data
-print("Yellow sample:", con.execute("SELECT * FROM prod.yellow_tripdata LIMIT 5").fetchall())
-print("Green sample:", con.execute("SELECT * FROM prod.green_tripdata LIMIT 5").fetchall())
+# Loop through each table and show row count + sample
+for schema, table in tables:
+    full_name = f"{schema}.{table}"
+    print(f"\n=== {full_name} ===")
+    count = con.execute(f"SELECT COUNT(*) FROM {full_name}").fetchone()[0]
+    print(f"Row count: {count}")
+    sample = con.execute(f"SELECT * FROM {full_name} LIMIT 5").fetchall()
+    print("Sample rows:", sample)
