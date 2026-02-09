@@ -1,9 +1,8 @@
 import duckdb
 
-# Connect to the parent-folder DuckDB file (the 2.4 GB one)
+# Connect to the parent-folder DuckDB file (the big one with data)
 con = duckdb.connect('/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/taxi_rides_ny.duckdb')
 
-# List all tables across schemas
 tables = con.execute("""
     SELECT table_schema, table_name
     FROM information_schema.tables
@@ -12,7 +11,6 @@ tables = con.execute("""
 
 print("Tables found:", tables)
 
-# Loop through each table and show row count + sample
 for schema, table in tables:
     full_name = f"{schema}.{table}"
     print(f"\n=== {full_name} ===")
