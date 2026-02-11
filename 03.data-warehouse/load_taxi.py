@@ -10,11 +10,10 @@ import time
 # Change this to your bucket name
 BUCKET_NAME = "njogu-dezoomcamp_hw3_2026" # Must be globally unique across GCS.
 
-# If you authenticated through the GCP SDK you can comment out these two lines
-CREDENTIALS_FILE = "gcs.json"
-client = storage.Client.from_service_account_json(CREDENTIALS_FILE)
-# If commented initialize client with the following
-# client = storage.Client(project='zoomcamp-mod3-datawarehouse')
+# Because I set GOOGLE_APPLICATION_CREDENTIALS in bash, 
+# I don’t need to hardcode the JSON file anymore.
+client = storage.Client() # will automatically use GOOGLE_APPLICATION_CREDENTIALS
+
 
 
 BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-"
