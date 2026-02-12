@@ -3,9 +3,12 @@ import requests
 from pathlib import Path
 
 BASE_URL = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
-
+# set this once at top of your script 
+PROJECT_DIR = Path("/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/taxi_rides_ny") 
+DATA_ROOT = PROJECT_DIR.parent / "data" 
+# -> /workspaces/.../04.analytics-engineering/data DATA_ROOT.mkdir(parents=True, exist_ok=True) def download_and_convert_files(taxi_type): # create data/<taxi_type> under the desired project data folder data_dir = DATA_ROOT / taxi_type data_dir.mkdir(parents=True, exist_ok=True)
 def download_and_convert_files(taxi_type):
-    data_dir = Path("data") / taxi_type
+    data_dir = DATA_ROOT / taxi_type
     data_dir.mkdir(exist_ok=True, parents=True)
 
     for year in [2019, 2020]:
