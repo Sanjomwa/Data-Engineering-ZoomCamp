@@ -3,13 +3,17 @@ import requests
 from pathlib import Path
 
 BASE_URL = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
-# set this once at top of your script 
-PROJECT_DIR = Path("/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/taxi_rides_ny") 
-DATA_ROOT = PROJECT_DIR.parent / "data" 
-# -> /workspaces/.../04.analytics-engineering/data DATA_ROOT.mkdir(parents=True, exist_ok=True) def download_and_convert_files(taxi_type): # create data/<taxi_type> under the desired project data folder data_dir = DATA_ROOT / taxi_type data_dir.mkdir(parents=True, exist_ok=True)
-def download_and_convert_files(taxi_type):
+
+# All paths are relative to the taxi_rides_ny folder (where the script lives)
+PROJECT_DIR = Path(__file__).parent.resolve()           # /.../taxi_rides_ny
+DATA_ROOT   = PROJECT_DIR / "data"                      # /.../taxi_rides_ny/data
+DB_PATH     = PROJECT_DIR / "taxi_rides_ny.duckdb"
+
+DATA_ROOT.mkdir(parents=True, exist_ok=True)
+
+def download_and_convert_files(taxi_type: str):
     data_dir = DATA_ROOT / taxi_type
-    data_dir.mkdir(exist_ok=True, parents=True)
+    data_dir.mkdir(parents=True, exist_ok=True)
 
     for year in [2019, 2020]:
         for month in range(1, 13):
@@ -20,11 +24,13 @@ def download_and_convert_files(taxi_type):
                 print(f"Skipping {parquet_filename} (already exists)")
                 continue
 
-            # Download CSV.gz file
+            # Download CSV.gz
             csv_gz_filename = f"{taxi_type}_tripdata_{year}-{month:02d}.csv.gz"
             csv_gz_filepath = data_dir / csv_gz_filename
 
-            response = requests.get(f"{BASE_URL}/{taxi_type}/{csv_gz_filename}", stream=True)
+            url = f"{BASE_URL}/{taxi_type}/{csv_gz_filename}"
+            print(f"Downloading {csv_gz_filename} ...")
+            response = requests.get(url, stream=True)
             response.raise_for_status()
 
             with open(csv_gz_filepath, 'wb') as f:
@@ -39,35 +45,40 @@ def download_and_convert_files(taxi_type):
             """)
             con.close()
 
-            # Remove the CSV.gz file to save space
-            csv_gz_filepath.unlink()
-            print(f"Completed {parquet_filename}")
+            # Clean up csv.gz
+            csv_gz_filepath.unlink(missing_ok=True)
+            print(f"Completed {parquet_filename}\n")
 
 def update_gitignore():
-    gitignore_path = Path(".gitignore")
-
-    # Read existing content or start with empty string
+    gitignore_path = PROJECT_DIR / ".gitignore"
     content = gitignore_path.read_text() if gitignore_path.exists() else ""
 
-    # Add data/ if not already present
     if 'data/' not in content:
         with open(gitignore_path, 'a') as f:
-            f.write('\n# Data directory\ndata/\n' if content else '# Data directory\ndata/\n')
+            if content and not content.endswith('\n'):
+                f.write('\n')
+            f.write('# Data directory\ndata/\n')
 
 if __name__ == "__main__":
-    # Update .gitignore to exclude data directory
+    print("Starting NYC Taxi data ingestion...\n")
     update_gitignore()
 
     for taxi_type in ["yellow", "green"]:
         download_and_convert_files(taxi_type)
 
-    con = duckdb.connect("taxi_rides_ny.duckdb")
+    print("All downloads & conversions finished. Now loading into DuckDB...\n")
+
+    con = duckdb.connect(DB_PATH)
     con.execute("CREATE SCHEMA IF NOT EXISTS prod")
 
     for taxi_type in ["yellow", "green"]:
+        pattern = f"data/{taxi_type}/*.parquet"
+        print(f"Creating table prod.{taxi_type}_tripdata from: {pattern}")
+
         con.execute(f"""
             CREATE OR REPLACE TABLE prod.{taxi_type}_tripdata AS
-            SELECT * FROM read_parquet('data/{taxi_type}/*.parquet', union_by_name=true)
+            SELECT * FROM read_parquet('{pattern}', union_by_name=true)
         """)
 
     con.close()
+    print(f"Done! DuckDB database created at: {DB_PATH}")
