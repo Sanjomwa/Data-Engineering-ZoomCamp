@@ -1,0 +1,5 @@
+# 04.analytics-engineering/.gitignore
+/data/
+*.duckdb
+.venv/
+__pycache__/
