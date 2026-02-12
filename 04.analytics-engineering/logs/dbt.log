@@ -22,3 +22,8 @@ Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
 Happy modeling!
 
 [0m06:58:24.179465 [info ] [MainThread]: Setting up your profile.
+[0m07:19:03.696834 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 1239.6344, "process_in_blocks": "105568", "process_kernel_time": 0.397281, "process_mem_max_rss": "152656", "process_out_blocks": "72", "process_user_time": 3.898742}
+[0m07:19:03.698093 [debug] [MainThread]: Command `dbt init` succeeded at 07:19:03.697913 after 1239.64 seconds
+[0m07:19:03.698886 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7ef56b5293a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7ef568909fd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7ef56dec7b60>]}
+[0m07:19:03.699541 [debug] [MainThread]: Flushing usage events
+[0m07:19:04.713896 [debug] [MainThread]: An error was encountered while trying to flush usage events
