@@ -86,3 +86,7 @@ bq show --format=prettyjson "${PROJECT_ID}:${DATASET}.${TABLE}"
 
 echo ""
 echo "Done!"
+echo "Next steps:"
+echo "1. Verify complete setup: ./verify-setup.sh"
+echo "2. Configure dbt Cloud or dbt Core"
+echo "=========================================="
