@@ -26,14 +26,19 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
-# In this example config, we tell dbt to build all models in the example/
-# directory as views. These settings can be overridden in the individual model
-# files using the `{{ config(...) }}` macro.
 models:
   taxi_rides_ny:
-    # Config indicated by + and applies to all files under models/example/
-    example:
+    # Staging models - views for initial data transformations
+    staging:
       +materialized: view
-# dbt_project.yml
-on-run-start:
-  - "{{ set_duckdb_limits() }}"
+      +schema: staging
+    
+    # Intermediate models - for combining data
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    
+    # Core models - tables for production use
+    core:
+      +materialized: table
+      +schema: core
