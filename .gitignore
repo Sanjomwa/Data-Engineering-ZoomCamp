@@ -11,3 +11,6 @@ data/
 # Python caches
 __pycache__/
 *.pyc
+# Ignore service account keys
+/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/gcs.json
+*.json
