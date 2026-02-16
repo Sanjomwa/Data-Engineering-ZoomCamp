@@ -1,13 +1,10 @@
 #!/bin/bash
-
-# Script to load FHV (For-Hire Vehicle) taxi data for 2019 into BigQuery
-# This script downloads CSV.GZ files from DataTalksClub and loads them into the nytaxi.fhv_tripdata table
-
 set -e
 
 PROJECT_ID="analytical-engineering-04"
 DATASET="nytaxi"
 TABLE="fhv_tripdata"
+EXTERNAL_TABLE="external_fhv_tripdata"
 YEAR="2019"
 BASE_URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/fhv"
 
@@ -20,73 +17,45 @@ echo "Table: $TABLE"
 echo "Year: $YEAR"
 echo ""
 
-# Create table if it doesn't exist (will use auto-detect on first load)
-echo "Step 1: Creating/checking table $DATASET.$TABLE"
+echo "Enter your GCS bucket name (from Terraform output):"
+read -p "Bucket name: " BUCKET_NAME
 
-# Load data for each month
+mkdir -p fhv_data
+cd fhv_data
+
+# Download 2019 files
 for MONTH in {01..12}; do
-    FILE="fhv_tripdata_2019-${MONTH}.csv.gz"
-    URL="${BASE_URL}/${FILE}"
-    
-    echo ""
-    echo "Step 2.$MONTH: Loading $FILE"
-    echo "URL: $URL"
-    
-    # Download file
-    echo "Downloading..."
-    curl -L -o "/tmp/$FILE" "$URL"
-    
-    # Load to BigQuery
-    # First month creates the table with schema auto-detection
-    if [ "$MONTH" = "01" ]; then
-        bq load \
-            --project_id="$PROJECT_ID" \
-            --location=EU \
-            --source_format=CSV \
-            --skip_leading_rows=1 \
-            --autodetect \
-            --replace \
-            "${DATASET}.${TABLE}" \
-            "/tmp/$FILE"
-    else
-        # Subsequent months append to existing table
-        bq load \
-            --project_id="$PROJECT_ID" \
-            --location=EU \
-            --source_format=CSV \
-            --skip_leading_rows=1 \
-            --noreplace \
-            "${DATASET}.${TABLE}" \
-            "/tmp/$FILE"
-    fi
-    
-    # Clean up
-    rm "/tmp/$FILE"
-    
-    echo "✓ Loaded $FILE"
+  FILE="fhv_tripdata_${YEAR}-${MONTH}.csv.gz"
+  URL="${BASE_URL}/${FILE}"
+  echo "Downloading: $FILE"
+  if curl -f -L -o "$FILE" "$URL"; then
+    echo "✅ Downloaded: $FILE"
+  else
+    echo "⚠️  Warning: Could not download $FILE"
+  fi
 done
 
-echo ""
-echo "======================================"
-echo "Data Load Complete!"
-echo "======================================"
-echo ""
-echo "Verifying row count..."
-bq query --use_legacy_sql=false --format=prettyjson \
-    "SELECT COUNT(*) as total_rows FROM \`${PROJECT_ID}.${DATASET}.${TABLE}\`"
+echo "Uploading to GCS..."
+gsutil -m cp fhv_tripdata_*.csv.gz "gs://$BUCKET_NAME/fhv/"
+echo "✅ Upload complete"
 
-echo ""
-echo "Sample of 5 rows:"
-bq query --use_legacy_sql=false --format=pretty \
-    "SELECT * FROM \`${PROJECT_ID}.${DATASET}.${TABLE}\` LIMIT 5"
+# Create external table
+bq query --use_legacy_sql=false "
+CREATE OR REPLACE EXTERNAL TABLE \`${PROJECT_ID}.${DATASET}.${EXTERNAL_TABLE}\`
+OPTIONS (
+  format = 'CSV',
+  compression = 'GZIP',
+  uris = ['gs://${BUCKET_NAME}/fhv/*.csv.gz'],
+  skip_leading_rows = 1
+);
+"
 
-echo ""
-echo "Schema:"
-bq show --format=prettyjson "${PROJECT_ID}:${DATASET}.${TABLE}"
+# Create materialized table
+bq query --use_legacy_sql=false "
+CREATE OR REPLACE TABLE \`${PROJECT_ID}.${DATASET}.${TABLE}\`
+AS SELECT * FROM \`${PROJECT_ID}.${DATASET}.${EXTERNAL_TABLE}\`;
+"
 
-echo ""
-echo "Done!"
-echo "Next steps:"
-echo "1. Verify complete setup: ./verify-setup.sh"
-echo "2. Configure dbt Cloud or dbt Core"
-echo "=========================================="
+# Verify
+bq query --use_legacy_sql=false "SELECT COUNT(*) FROM \`${PROJECT_ID}.${DATASET}.${TABLE}\`"
+echo "FHV Taxi data loaded successfully into BigQuery!"
