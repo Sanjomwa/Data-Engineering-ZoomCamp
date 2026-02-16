@@ -58,4 +58,25 @@ AS SELECT * FROM \`${PROJECT_ID}.${DATASET}.${EXTERNAL_TABLE}\`;
 
 # Verify
 bq query --use_legacy_sql=false "SELECT COUNT(*) FROM \`${PROJECT_ID}.${DATASET}.${TABLE}\`"
-echo "FHV Taxi data loaded successfully into BigQuery!"
+echo "✅ FHV Taxi data loaded successfully into BigQuery!"
+
+# Cleanup local files
+cd ..
+read -p "Do you want to delete local FHV files? (y/n): " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    rm -rf fhv_data
+    echo "✅ Local FHV files deleted"
+else
+    echo "Local FHV files kept in ./fhv_data"
+fi
+
+echo "======================================"
+echo "✅ FHV Taxi Data Load Complete"
+echo "======================================"
+echo "Project: $PROJECT_ID"
+echo "Dataset: $DATASET"
+echo "External Table: $EXTERNAL_TABLE"
+echo "Materialized Table: $TABLE"
+echo "GCS Location: gs://$BUCKET_NAME/fhv/"
+echo "======================================"
