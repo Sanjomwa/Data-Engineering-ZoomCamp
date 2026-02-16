@@ -32,10 +32,7 @@ When new value appears outside `accepted_values` list:
 
 ## Learning in Public
 X thread:  
-https://x.com/sam_njogu9/status/... (link to first post of the thread after you publish)
-
-## Repo
-https://github.com/sam-njogu/Data-Engineering-Zoomcamp/tree/main/04-analytics-engineering
-
+https://x.com/sam_njogu9/status/2023342722728489391
 ---
+```
 Finished Module 4 – excited for the next one!
