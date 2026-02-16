@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: raw_data
-    database: analytical-engineering-04   # BigQuery project ID
-    schema: prod                          # BigQuery dataset name
+    database: analytical-engineering-04 # BigQuery project ID
+    schema: nytaxi # BigQuery dataset name
     tables:
       - name: yellow_tripdata
         identifier: yellow_tripdata

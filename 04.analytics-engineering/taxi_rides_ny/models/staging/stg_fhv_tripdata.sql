@@ -20,7 +20,7 @@ with fhv_data as (
         cast(DOlocationID as integer) as dropoff_locationid,
         cast(SR_Flag as integer) as sr_flag
         
-    from {{ source('nytaxi', 'fhv_tripdata') }}
+    from {{ source('raw_data', 'fhv_tripdata') }}
     
     -- Filter out records where dispatching_base_num is NULL
     where dispatching_base_num is not null
