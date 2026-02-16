@@ -1,11 +1,14 @@
 version: 2
 
 sources:
-  - name: raw_data
-    database: taxi_rides_ny
-    schema: prod
+  - name: nytaxi        # this must match the source() call in your SQL models
+    database: taxi_rides_ny   # your database name
+    schema: prod              # the schema where the raw tables live
     tables:
+      - name: fhv_tripdata    # add this since your staging model references it
+        identifier: fhv_tripdata
       - name: green_tripdata
         identifier: green_tripdata
       - name: yellow_tripdata
-        identifier: yellow_tripdata 
+        identifier: yellow_tripdata
+      
