@@ -5,7 +5,7 @@
 
 set -e
 
-PROJECT_ID="ny-taxi-dbt-zoomcamp"
+PROJECT_ID="analytical-engineering-04"
 DATASET="nytaxi"
 TABLE="fhv_tripdata"
 YEAR="2019"
