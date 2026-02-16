@@ -1,4 +1,9 @@
-
+# dbt_project.yml
+name:
+version:
+...
+dbt-cloud:
+    project-id: 70471823550725 
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
