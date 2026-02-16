@@ -13,7 +13,7 @@
 # - Service account with BigQuery and Storage permissions
 #
 # Usage:
-#   ./04-load-green-taxi.sh
+#   ./load-green-taxi.sh
 # ==============================================================================
 
 set -e # Exit on error

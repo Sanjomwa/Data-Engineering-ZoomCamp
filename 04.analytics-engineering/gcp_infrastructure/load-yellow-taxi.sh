@@ -13,7 +13,7 @@
 # - Service account with BigQuery and Storage permissions
 #
 # Usage:
-#   ./03-load-yellow-taxi.sh
+#   ./load-yellow-taxi.sh
 # ==============================================================================
 
 set -e # Exit on error
@@ -185,6 +185,6 @@ echo "Total Records: $ROW_COUNT"
 echo "GCS Location: gs://$BUCKET_NAME/yellow/"
 echo
 echo "Next steps:"
-echo "1. Run: ./04-load-green-taxi.sh"
+echo "1. Run: ./load-green-taxi.sh"
 echo "2. Verify setup: ./verify-setup.sh"
 echo "=========================================="
