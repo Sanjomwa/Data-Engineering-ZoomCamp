@@ -49,7 +49,6 @@ models:
         data_type: string
         tests:
           - accepted_values:
-              arguments:
                 values: ["Green", "Yellow"]
           - not_null
       - name: rate_code_id
@@ -60,7 +59,6 @@ models:
         data_type: integer
         tests:
           - relationships:
-              arguments:
                 to: ref('dim_zones')
                 field: location_id
       - name: pickup_borough
@@ -74,7 +72,6 @@ models:
         data_type: integer
         tests:
           - relationships:
-              arguments:
                 to: ref('dim_zones')
                 field: location_id
       - name: dropoff_borough
