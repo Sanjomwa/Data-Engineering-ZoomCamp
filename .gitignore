@@ -18,3 +18,4 @@ __pycache__/
 logs/runs
 logs/*.log
 *.py[cod]
+/workspaces/Data-Engineering-ZoomCamp/duckdb.db
