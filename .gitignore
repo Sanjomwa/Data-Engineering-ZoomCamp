@@ -15,3 +15,6 @@ __pycache__/
 /workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/gcs.json
 *.json
 .bruin.yml
+logs/runs
+logs/*.log
+*.py[cod]

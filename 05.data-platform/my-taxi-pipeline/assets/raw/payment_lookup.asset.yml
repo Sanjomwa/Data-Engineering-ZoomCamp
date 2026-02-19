@@ -22,6 +22,6 @@ columns:
     description: Numeric code signifying how the passenger paid for the trip
     primary_key: true
     nullable: false
-  - name: payment_description
+  - name: payment_type_name
     type: VARCHAR
     description: Human-readable description of the payment type
