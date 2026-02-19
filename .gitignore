@@ -14,3 +14,4 @@ __pycache__/
 # Ignore service account keys
 /workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/gcs.json
 *.json
+.bruin.yml
