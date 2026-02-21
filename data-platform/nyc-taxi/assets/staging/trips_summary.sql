@@ -1,4 +1,5 @@
 /* @bruin
+
 name: staging.trips_summary
 type: duckdb.sql
 description: |
@@ -7,16 +8,16 @@ description: |
   and joins with the taxi zone lookup table to enrich data with borough and zone names.
   Aggregation Level: Individual trip records with location enrichment.
 
-depends:
-  - raw.taxi_zone_lookup
-  - raw.trips_raw
-  - raw.payment_lookup
-
 materialization:
   type: table
   strategy: time_interval
   incremental_key: pickup_time
   time_granularity: timestamp
+
+depends:
+  - raw.taxi_zone_lookup
+  - raw.trips_raw
+  - raw.payment_lookup
 
 columns:
   - name: pickup_time
@@ -96,6 +97,7 @@ columns:
 custom_checks:
   - name: all_rows_unique
     description: Ensures that each row is unique based on the primary key columns (pickup_time, dropoff_time, pickup_location_id, dropoff_location_id, taxi_type)
+    value: 0
     query: |
       SELECT COUNT(*)
       FROM (
@@ -115,7 +117,6 @@ custom_checks:
         GROUP BY ALL
         HAVING COUNT(*) > 1
       )
-    value: 0
 
 @bruin */
 
