@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+  # 🗄️ Postgres database
+  # This is your main relational database where you’ll store and query NYC taxi data.
+  # It runs inside a container and listens on port 5432 (the default Postgres port).
+  postgres-ny-taxi:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: "root" # Username to log into Postgres
+      POSTGRES_PASSWORD: "root" # Password for the user
+      POSTGRES_DB: "postgres_ny_taxi" # Database name created at startup
+    volumes:
+      - ny_taxi_postgres_data:/var/lib/postgresql # Named volume for persistent DB storage
+      - ./data:/var/lib/postgresql/data/import # Bind mount to import local data files
+    ports:
+      - "5432:5432" # Maps container port 5432 to your machine’s port 5432
+    networks:
+      - localnet
+
+  # 📊 pgAdmin web interface
+  # A browser-based tool to manage and visualize your Postgres database.
+  # You’ll log in with the email/password below and connect to Postgres.
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com" # Login email for pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: "root" # Login password
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin # Stores pgAdmin settings persistently
+    ports:
+      - "8085:80" # Access pgAdmin at http://localhost:8085
+    networks:
+      - localnet
+
+  # ☁️ Fake GCS server (Google Cloud Storage emulator)
+  # This mimics Google Cloud Storage locally, so Terraform can create buckets
+  # without needing a real GCP billing account.
+  fake-gcs-server:
+    image: fsouza/fake-gcs-server:latest
+    command: [ "-scheme", "http" ] # Run with HTTP scheme (simpler than HTTPS for local dev)
+    ports:
+      - "4443:4443" # Access emulator at http://localhost:4443/storage/v1/
+    networks:
+      - localnet
+    volumes:
+      - ./fake-gcs-data:/data # Keeps your fake buckets/objects between runs
+
+  # 🐘 Zookeeper
+  # A coordination service required by Kafka. Think of it as Kafka’s “traffic controller.”
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181" # Zookeeper listens here
+    networks:
+      - localnet
+
+  # 📡 Kafka broker
+  # A distributed streaming platform. You’ll use this instead of GCP Pub/Sub
+  # to practice producing and consuming real-time data streams.
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper # Kafka needs Zookeeper to run
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    ports:
+      - "9092:9092" # Internal Kafka port (used by other containers)
+      - "29092:29092" # External Kafka port (used by your local machine)
+    networks:
+      - localnet
+
+# 📦 Volumes
+# These are like “hard drives” for your containers, so data isn’t lost when containers stop.
+volumes:
+  ny_taxi_postgres_data:
+  pgadmin_data:
+  fake-gcs-data:
+
+    # 🌐 Network
+    # All services are connected to the same bridge network so they can talk to each other.
+networks:
+  localnet:
+    driver: bridge
