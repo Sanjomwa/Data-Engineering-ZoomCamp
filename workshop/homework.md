@@ -30,6 +30,7 @@ SELECT
 FROM taxi_data_20260223045641.rides;
 ```
 <img width="454" height="241" alt="Screenshot 2026-02-23 201521" src="https://github.com/user-attachments/assets/002d0daf-423e-41e4-ae86-128ab8a6d3d2" />
+
 ## ANSWER: $6,063.41
 
 ## Reflection on Pipeline Investigation Methods
