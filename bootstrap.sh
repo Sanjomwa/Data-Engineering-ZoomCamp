@@ -8,23 +8,17 @@ if ! command -v uv &> /dev/null; then
   source ~/.bashrc
 fi
 
-# Clear and recreate venv in /tmp
-echo "[INFO] Creating fresh venv in /tmp/.venv..."
-uv venv /tmp/.venv --clear
+# Clear and recreate venv in repo
+echo "[INFO] Creating fresh venv in .venv..."
+uv venv /workspaces/Data-Engineering-ZoomCamp/.venv --clear
 
-# Sync dependencies into /tmp/.venv
+# Sync dependencies into .venv
 echo "[INFO] Syncing dependencies..."
-uv sync --python /tmp/.venv/bin/python
+uv sync --python /workspaces/Data-Engineering-ZoomCamp/.venv/bin/python
 
-# Activate venv for this session
-source /tmp/.venv/bin/activate
+# Activate venv
+source /workspaces/Data-Engineering-ZoomCamp/.venv/bin/activate
 
-# Verification messages
-echo "[VERIFY] Active Python interpreter: $(which python)"
-echo "[VERIFY] Python version: $(python --version)"
-echo "[VERIFY] uv cache directory: $(ls /tmp/uv-cache || echo 'No uv cache yet')"
-echo "[VERIFY] pip cache directory: $(ls /tmp/pip-cache || echo 'No pip cache yet')"
-
-# Optional cleanup if /vscode gets tight
-echo "[CLEANUP] Clearing old VS Code logs..."
-rm -rf ~/.vscode-remote/data/logs/* || true
+# Verification
+echo "[VERIFY] Active Python: $(which python)"
+python --version
