@@ -93,9 +93,3 @@ htmlcov/
 .spyderproject
 .spyproject
 .ropeproject
-
-# Misc
-*.manifest
-*.spec
-pip-log.txt
-pip-delete-this-directory.txt
