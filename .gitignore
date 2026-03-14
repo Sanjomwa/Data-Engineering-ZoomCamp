@@ -1,26 +1,3 @@
-# Ignore raw data and large files
-data/
-*.csv.gz
-*.parquet
-*.duckdb
-
-# Ignore dbt build artifacts
-/target/
-/dbt_packages/
-
-# Python caches
-__pycache__/
-*.pyc
-# Ignore service account keys
-/workspaces/Data-Engineering-ZoomCamp/04.analytics-engineering/gcs.json
-*.json
-.bruin.yml
-logs/runs
-logs/*.log
-*.py[cod]
-# Ignore DuckDB databases
-duckdb.db
-*.duckdb
 # -----------------------------
 # Data Engineering Git Ignore
 # -----------------------------
@@ -30,7 +7,6 @@ data/
 *.csv
 *.csv.gz
 *.parquet
-*.json
 *.duckdb
 duckdb.db
 
@@ -38,22 +14,25 @@ duckdb.db
 /target/
 /dbt_packages/
 
-# Bruin and pipeline logs
+# Logs and pipeline runs
 logs/
 logs/*.log
 logs/runs
 
 # Python caches and virtual environments
 __pycache__/
+*.py[cod]
 *.pyc
 *.pyo
 *.pyd
-*.py[cod]
 *.egg-info/
 .eggs/
 .venv/
 venv/
 env/
+ENV/
+env.bak/
+venv.bak/
 
 # Jupyter notebooks checkpoints
 .ipynb_checkpoints/
@@ -65,12 +44,18 @@ env/
 *.env
 *.secrets
 *.json
+secrets/
+service-account.json
+*-creds.json
 
 # Docker and Terraform artifacts
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
 .terraform/
-docker-compose.override.yml
+*.tfvars
+*.tfvars.json
+terraform.rc
+.terraformrc
 
 # OS / Editor files
 .DS_Store
@@ -82,5 +67,35 @@ Thumbs.db
 # Backup folders
 *_backup/
 
-*sync_pipeline.sh
-*sync_workflow.md
+# Installer / build artifacts
+build/
+dist/
+downloads/
+.eggs/
+wheels/
+share/python-wheels/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage*
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+.spyderproject
+.spyproject
+.ropeproject
+
+# Misc
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
