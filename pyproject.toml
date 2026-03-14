@@ -12,23 +12,20 @@ dependencies = [
     "psycopg2-binary>=2.9.11",
     "pyarrow>=22.0.0",
     "duckdb>=1.4.4",
-
     # dbt + analytics
     "dbt-core>=1.8.0",
     "dbt-bigquery>=1.8.0",
     "dbt-duckdb>=1.10.0",
-
     # Workflow / ingestion
     "dlt[workspace]>=1.22.0",
     "tqdm>=4.67.1",
     "click>=8.1.7",
-
     # Cloud integration
     "google-cloud-storage>=2.4,<3.2",
-
     # Advanced frameworks
     "ibis-framework[duckdb]>=12.0.0",
     "marimo[recommended]>=0.19.11",
+    "pyspark>=4.1.1",
 ]
 
 [dependency-groups]
