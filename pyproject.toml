@@ -26,6 +26,7 @@ dependencies = [
     "ibis-framework[duckdb]>=12.0.0",
     "marimo[recommended]>=0.19.11",
     "pyspark>=4.1.1",
+    "kafka-python>=2.3.0",
 ]
 
 [dependency-groups]
