@@ -23,11 +23,6 @@ Prerequisites:
 - [uv](https://docs.astral.sh/uv/)
 - A SQL client - [pgcli](https://www.pgcli.com/) (`uvx pgcli`), DBeaver, pgAdmin, or DataGrip
 
-Code:
-
-- [Reference code](./) in this directory (`07-streaming/workshop/`)
-- [Code created during the workshop](live/) by Alexey
-
 The README walks through building everything from scratch - you can follow
 along step by step or study the existing files and run the commands.
 
