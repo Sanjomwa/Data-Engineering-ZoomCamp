@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from kafka import KafkaConsumer
 
 sys.path.insert(0, str(Path(__file__).parent.parent / 'producers'))
-from homework_producer import green_ride_deserializer
+from hw_producer import green_ride_deserializer
 
 load_dotenv()
 
