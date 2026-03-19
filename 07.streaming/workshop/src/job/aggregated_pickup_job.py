@@ -6,11 +6,11 @@ def create_events_source_kafka(t_env):
     table_name = "events"
     source_ddl = f"""
         CREATE TABLE {table_name} (
-            lpep_pickup_datetime STRING,
-            lpep_dropoff_datetime STRING,
-            PULocationID INTEGER,
-            DOLocationID INTEGER,
-            passenger_count INTEGER,
+            lpep_pickup_datetime VARCHAR,
+            lpep_dropoff_datetime VARCHAR,
+            PULocationID INT,
+            DOLocationID INT,
+            passenger_count INT,
             trip_distance DOUBLE,
             tip_amount DOUBLE,
             total_amount DOUBLE,
@@ -21,7 +21,6 @@ def create_events_source_kafka(t_env):
             'properties.bootstrap.servers' = 'redpanda:29092',
             'topic' = 'green-trips',
             'scan.startup.mode' = 'earliest-offset',
-            'properties.auto.offset.reset' = 'earliest',
             'format' = 'json'
         );
         """
@@ -53,7 +52,7 @@ def create_aggregated_pickup_sink(t_env):
 def log_aggregation():
     env = StreamExecutionEnvironment.get_execution_environment()
     env.enable_checkpointing(10 * 1000)
-    env.set_parallelism(1)
+    env.set_parallelism(1)  # ✅ must be 1 because green-trips has 1 partition
 
     settings = EnvironmentSettings.new_instance().in_streaming_mode().build()
     t_env = StreamTableEnvironment.create(env, environment_settings=settings)
