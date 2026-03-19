@@ -18,7 +18,7 @@ def create_events_source_kafka(t_env):
             WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
         ) WITH (
             'connector' = 'kafka',
-            'properties.bootstrap.servers' = 'redpanda:9092',
+            'properties.bootstrap.servers' = 'redpanda:29092',
             'topic' = 'green-trips',
             'scan.startup.mode' = 'earliest-offset',
             'format' = 'json'
@@ -52,7 +52,7 @@ def create_aggregated_pickup_sink(t_env):
 def log_aggregation():
     env = StreamExecutionEnvironment.get_execution_environment()
     env.enable_checkpointing(10 * 1000)
-    env.set_parallelism(1)  # ✅ must be 1 because green-trips has 1 partition
+    env.set_parallelism(1)  # must be 1 because green-trips has 1 partition
 
     settings = EnvironmentSettings.new_instance().in_streaming_mode().build()
     t_env = StreamTableEnvironment.create(env, environment_settings=settings)
@@ -60,7 +60,9 @@ def log_aggregation():
     source_table = create_events_source_kafka(t_env)
     sink_table = create_aggregated_pickup_sink(t_env)
 
-    t_env.execute_sql(f"""
+    print("Submitting streaming job...")
+
+    insert_stmt = t_env.execute_sql(f"""
         INSERT INTO {sink_table}
         SELECT
             window_start,
@@ -70,7 +72,18 @@ def log_aggregation():
             TUMBLE(TABLE {source_table}, DESCRIPTOR(event_timestamp), INTERVAL '5' MINUTE)
         )
         GROUP BY window_start, PULocationID;
-    """).wait()
+    """)
+
+    job_client = insert_stmt.get_job_client()
+    if job_client is not None:
+        job_id = job_client.get_job_id()
+        print(f"Job submitted successfully!")
+        print(f"Job ID: {job_id}")
+        print(f"Check status and logs in Flink UI: http://localhost:8081")
+        print("The job is now running in detached mode (script can exit).")
+        print("Aggregated results will appear in Postgres table 'pickup_aggregated' once windows close.")
+    else:
+        print("Warning: Could not get JobClient. Job may not have been submitted properly.")
 
 
 if __name__ == '__main__':
