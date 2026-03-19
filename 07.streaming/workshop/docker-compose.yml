@@ -28,6 +28,7 @@ services:
       - 9092:9092
       - 28082:28082
       - 29092:29092
+
   postgres:
     image: postgres:18
     restart: on-failure
@@ -37,6 +38,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+
   jobmanager:
     build:
       context: .
@@ -56,6 +58,7 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         jobmanager.memory.process.size: 1600m
+
   taskmanager:
     image: pyflink-workshop
     pull_policy: never
@@ -74,4 +77,4 @@ services:
         jobmanager.rpc.address: jobmanager
         taskmanager.memory.process.size: 1728m
         taskmanager.numberOfTaskSlots: 15
-        parallelism.default: 3
+        parallelism.default: 1 

@@ -18,7 +18,7 @@ def create_events_source_kafka(t_env):
             WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
         ) WITH (
             'connector' = 'kafka',
-            'properties.bootstrap.servers' = 'redpanda:29092',
+            'properties.bootstrap.servers' = 'redpanda:9092',
             'topic' = 'green-trips',
             'scan.startup.mode' = 'earliest-offset',
             'format' = 'json'

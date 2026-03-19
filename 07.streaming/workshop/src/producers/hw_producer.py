@@ -24,8 +24,8 @@ class GreenRide:
 
 def green_ride_from_row(row):
     return GreenRide(
-        lpep_pickup_datetime=str(row['lpep_pickup_datetime']),
-        lpep_dropoff_datetime=str(row['lpep_dropoff_datetime']),
+        lpep_pickup_datetime=pd.to_datetime(row['lpep_pickup_datetime']).strftime("%Y-%m-%d %H:%M:%S"),
+        lpep_dropoff_datetime=pd.to_datetime(row['lpep_dropoff_datetime']).strftime("%Y-%m-%d %H:%M:%S"),
         PULocationID=int(row['PULocationID']),
         DOLocationID=int(row['DOLocationID']),
         passenger_count=int(row['passenger_count'] if type(row['passenger_count']) == int else 0),
